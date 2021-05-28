@@ -70,7 +70,11 @@ protected:
 
 	void NextWeapon();
 
+	void NextFiremode();
+
 	void ChooseWeapon(int INDEXofWeaponBelt);
+
+	void ThrowCurrentWeapon();
 
 	FORCEINLINE AWeapon* GetWeapon(int INDEXofWeaponBelt);
 

@@ -53,7 +53,7 @@ public:
 
 	//void OnInteract(AActor* Caller) override;
 
-	virtual void Use() PURE_VIRTUAL(AWeapon::Use, );
+	virtual void Use(float val) PURE_VIRTUAL(AWeapon::Fire, );
 
 	void OnInteract(AActor* Caller) override;
 };

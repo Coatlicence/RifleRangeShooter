@@ -26,6 +26,11 @@ ARifle::ARifle()
 	{
 		Effect = assetParticleSystem.Object;
 	}
+
+	FireModes.clear();
+
+	FireModes.insert(std::make_pair(EFireModes::SINGLE,		[&](float val) { this->SingleFire(val);		}));
+	FireModes.insert(std::make_pair(EFireModes::AUTOMATIC,	[&](float val) { this->AutomaticFire(val);	}));
 }
 
 void ARifle::Reload()
@@ -49,7 +54,7 @@ void ARifle::Reload()
 	}
 }
 
-void ARifle::Use()
+void ARifle::Fire()
 {
 	if ((CanAttack) && (CurrentAmmoInClip > 0))
 	{
@@ -74,7 +79,55 @@ void ARifle::Use()
 	}
 }
 
+void ARifle::SingleFire(float val)
+{
+	if ((val >= 1.f) && (!TriggerIsPulled) && CanAttack) 
+	{
+		TriggerIsPulled = true;
+		Fire();
+	}
+	
+	if (val < 1.f)
+	{
+		TriggerIsPulled = false;
+	}
+}
+
+void ARifle::AutomaticFire(float val)
+{
+	if (val >= 1)
+	{
+		Fire();
+	}
+}
+
+void ARifle::Use(float val)
+{
+
+	bool expression = FireModes.begin() != FireModes.end();
+
+	if (expression)
+	{
+		FireModes.at(CurrentFireMode)(val);
+	}
+}
+
 void ARifle::AddToAllAmmo(uint16 addNumber)
 {
 	AllAmmo += (int)addNumber;
+}
+
+void ARifle::NextFiremode()
+{
+	std::map<EFireModes, std::function<void(float)>>::const_iterator it;
+	it = FireModes.find(CurrentFireMode);
+
+	it++;
+
+	if (it == FireModes.cend())
+	{
+		it = FireModes.cbegin();
+	}
+
+	CurrentFireMode = it->first;
 }

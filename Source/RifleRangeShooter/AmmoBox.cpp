@@ -33,24 +33,20 @@ void AAmmoBox::OnInteract(AActor* Caller)
 {
 	auto player = Cast<ARifleRangeShooterCharacter>(Caller);
 
-	md(TEXT("1"));
-
 	if (player != nullptr)
 	{
 		auto weapon = player->GetCurrentWeapon();
 
 		auto rifle = Cast<ARifle>(weapon);
 
-		md(TEXT("2"));
-
 		if (rifle != nullptr)
 		{
 			rifle->AddToAllAmmo(Ammo);
 
-			md(TEXT("ok"));
-
 			Destroy();
 		}
 	}
+
+	
 }
 

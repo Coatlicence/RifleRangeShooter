@@ -103,6 +103,20 @@ void ARifleRangeShooterCharacter::NextWeapon()
 }
 
 
+void ARifleRangeShooterCharacter::NextFiremode()
+{
+	if (GetCurrentWeapon() != nullptr)
+	{
+		auto rifle = Cast<ARifle>(GetCurrentWeapon());
+
+		if (rifle)
+		{
+			rifle->NextFiremode();
+		}
+	}
+}
+
+
 bool ARifleRangeShooterCharacter::isWeaponOnHand()
 {
 	if (WeaponBelt.IsValidIndex(CurrentWeapon))
@@ -131,9 +145,14 @@ void ARifleRangeShooterCharacter::SetupPlayerInputComponent(class UInputComponen
 	// next weapon
 	PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, this, &ARifleRangeShooterCharacter::NextWeapon);
 
+	// next firemode of weapon
+	PlayerInputComponent->BindAction("NextFiremode", IE_Pressed, this, &ARifleRangeShooterCharacter::NextFiremode);
+	
 	// reload
 	PlayerInputComponent->BindAction("ReloadWeapon", IE_Pressed, this, &ARifleRangeShooterCharacter::Reload);
 
+	// throw weapon
+	PlayerInputComponent->BindAction("ThrowCurrentWeapon", IE_Pressed, this, &ARifleRangeShooterCharacter::ThrowCurrentWeapon);
 
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &ARifleRangeShooterCharacter::MoveForward);
@@ -176,6 +195,22 @@ void ARifleRangeShooterCharacter::ChooseWeapon(int INDEXofWeaponBelt)
 	}
 }
 
+void ARifleRangeShooterCharacter::ThrowCurrentWeapon()
+{
+	if (GetCurrentWeapon())
+	{
+		AWeapon* const weapon = GetCurrentWeapon();
+
+		for (int i = 0; i < BeltSize; i++)	
+			if (WeaponBelt[i] == weapon)
+			{
+				weapon->DetachAllSceneComponents(Mesh1P, FDetachmentTransformRules::KeepWorldTransform);
+					
+				WeaponBelt[i] = nullptr;
+			}
+	}
+}
+
 
 void ARifleRangeShooterCharacter::PickupWeapon(AWeapon* weapon)
 {
@@ -199,11 +234,12 @@ void ARifleRangeShooterCharacter::PickupWeapon(AWeapon* weapon)
 
 void ARifleRangeShooterCharacter::OnFire(float val)
 {
-	if ((val > 0) && (GetCurrentWeapon() != nullptr))
+	if (GetCurrentWeapon() != nullptr)
 	{
-		GetCurrentWeapon()->Use();
+		GetCurrentWeapon()->Use(val);
 	}
 }
+
 
 void ARifleRangeShooterCharacter::Reload()
 {
