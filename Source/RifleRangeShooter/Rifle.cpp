@@ -9,12 +9,14 @@
 #include "Math/UnrealMathUtility.h"
 #include "TimerManager.h"
 #include "Kismet/KismetStringLibrary.h"
-
+#include "Math/UnrealMathUtility.h"
 
 #define md(x) GEngine->AddOnScreenDebugMessage(INDEX_NONE, 12.f, FColor::Cyan, x);
 
 ARifle::ARifle()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	Name = "Rifle";
 
 	Effect = CreateDefaultSubobject<UParticleSystem>(TEXT("effect"));
@@ -32,6 +34,22 @@ ARifle::ARifle()
 	FireModes.insert(std::make_pair(EFireModes::SINGLE,		[&](float val) { this->SingleFire(val);		}));
 	FireModes.insert(std::make_pair(EFireModes::AUTOMATIC,	[&](float val) { this->AutomaticFire(val);	}));
 }
+
+
+
+void ARifle::Tick(float DeltaTime)
+{
+	if (CurrentInaccuracy <= 0)
+	{
+		CurrentInaccuracy = 0;
+	}
+	else
+	{
+		CurrentInaccuracy -= RecoilRecovery;
+	}
+}
+
+
 
 void ARifle::Reload()
 {
@@ -54,6 +72,8 @@ void ARifle::Reload()
 	}
 }
 
+
+
 void ARifle::Fire()
 {
 	if ((CanAttack) && (CurrentAmmoInClip > 0))
@@ -64,9 +84,16 @@ void ARifle::Fire()
 		FVector loc = WeaponMesh->GetSocketLocation("socket_BulletSpawnPosition");
 		FRotator rot = GetActorRotation();
 
+		auto f = [=]() { return FMath::RandRange(0.f, CurrentInaccuracy); };
+
+		rot += FRotator(f(), f(), f());
+
 		auto bullet = GetWorld()->SpawnActor<ABullet>(loc, rot, params);
 
 		bullet->AddDamage(Damage);
+
+		if (CurrentInaccuracy <= MaxInaccuracy)
+		CurrentInaccuracy += Recoil;
 
 		GetWorld()->GetTimerManager().SetTimer(attackDelayTimer, this, &ARifle::CanAttackSet, AttackDelay);
 

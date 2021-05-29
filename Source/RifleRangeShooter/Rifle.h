@@ -22,6 +22,8 @@ class RIFLERANGESHOOTER_API ARifle : public AWeapon
 public:
 	ARifle();
 
+	virtual void Tick(float DeltaTime) override;
+
 	UPROPERTY(EditAnywhere, Category = "Weapon")
 	float Damage;
 
@@ -50,6 +52,22 @@ protected:
 
 	std::map<EFireModes, std::function<void(float)>> FireModes;
 
+	///--------------------------------------------------
+	// Recoil
+
+	UPROPERTY(EditAnywhere, Category = "Recoil")
+	float Recoil = 0.5;
+
+	UPROPERTY(EditAnywhere, Category = "Recoil")
+	float MaxInaccuracy = 3.f;
+
+	/// For EveryTick subracts this value from CurrentInaccuracy
+	UPROPERTY(EditAnywhere, Category = "Recoil")
+	float RecoilRecovery = 0.02;
+
+	/// How many degresses we will add to bullet rotation
+	float CurrentInaccuracy = 0;
+
 	///----------------------------
 
 	bool TriggerIsPulled = false;
@@ -62,6 +80,7 @@ public:
 	UParticleSystem* Effect;
 
 public:
+	
 	void Reload();
 
 	void Use(float val) override;
@@ -80,5 +99,5 @@ private:
 
 	virtual void AutomaticFire(float val);
 
-	//virtual void AutoFire();
+	
 };

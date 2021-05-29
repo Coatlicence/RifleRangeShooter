@@ -7,8 +7,7 @@
 #include "RifleRangeShooterGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
-
-
+#include "DrawDebugHelpers.h"
 
 
 // Sets default values
@@ -50,6 +49,8 @@ void ABullet::BeginPlay()
 	BulletMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 
 	BulletMesh->IgnoreActorWhenMoving(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn(), true);
+
+	GetWorld()->GetTimerManager().SetTimer(LifeTimer, this, &ABullet::DestroySelf, LifeTime, false, -1.f);
 }
 
 // Called every frame
@@ -57,9 +58,7 @@ void ABullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//md(TEXT("ok"));
-	
-	
+	DrawDebugPoint(GetWorld(), GetActorLocation(), 6.f, FColor::Red, false, 1.f);
 }
 
 void ABullet::AddDamage(float ToAdd)
@@ -83,5 +82,10 @@ void ABullet::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitive
 
 		Destroy();
 	}
+}
+
+void ABullet::DestroySelf()
+{
+	this->Destroy();
 }
 

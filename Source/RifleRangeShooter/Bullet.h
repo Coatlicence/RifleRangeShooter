@@ -7,6 +7,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Target.h"
+#include "TimerManager.h"
 #include "Bullet.generated.h"
 
 UCLASS()
@@ -31,6 +32,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
 	float Damage;
 
+private:
+	float LifeTime = 2.f;
+
+	FTimerHandle LifeTimer;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -41,4 +47,5 @@ public:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitActor, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	void DestroySelf();
 };
