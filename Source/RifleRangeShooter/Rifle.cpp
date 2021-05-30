@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Rifle.h"
 #include "Engine/World.h"
 #include "Engine/Engine.h"
@@ -39,14 +38,35 @@ ARifle::ARifle()
 
 void ARifle::Tick(float DeltaTime)
 {
-	if (CurrentInaccuracy <= 0)
+	/// 
+	if (GetVelocity().Size() > 0)
 	{
-		CurrentInaccuracy = 0;
+		if (((MinInaccuracy + 1) * 2) > MaxInaccuracyDynamic)
+		{
+			MinInaccuracyDynamic = MaxInaccuracyDynamic;
+		}
+		else
+		{
+			MinInaccuracyDynamic = (MinInaccuracy + 1) * 2;
+		}
 	}
+	else if (GetVelocity().Size() == 0)
+	{
+		MinInaccuracyDynamic = MinInaccuracy;
+	}
+
+	/// Recoverying
+	if (MinInaccuracyDynamic <= MaxInaccuracyDynamic)
+		if (CurrentInaccuracy <= MinInaccuracyDynamic)
+		{
+			CurrentInaccuracy = MinInaccuracyDynamic;
+		}
+		else
+		{
+			CurrentInaccuracy -= RecoilRecovery;
+		}
 	else
-	{
-		CurrentInaccuracy -= RecoilRecovery;
-	}
+		CurrentInaccuracy = MaxInaccuracyDynamic;
 }
 
 
@@ -106,6 +126,8 @@ void ARifle::Fire()
 	}
 }
 
+
+
 void ARifle::SingleFire(float val)
 {
 	if ((val >= 1.f) && (!TriggerIsPulled) && CanAttack) 
@@ -120,6 +142,8 @@ void ARifle::SingleFire(float val)
 	}
 }
 
+
+
 void ARifle::AutomaticFire(float val)
 {
 	if (val >= 1)
@@ -127,6 +151,8 @@ void ARifle::AutomaticFire(float val)
 		Fire();
 	}
 }
+
+
 
 void ARifle::Use(float val)
 {
@@ -139,10 +165,14 @@ void ARifle::Use(float val)
 	}
 }
 
+
+
 void ARifle::AddToAllAmmo(uint16 addNumber)
 {
 	AllAmmo += (int)addNumber;
 }
+
+
 
 void ARifle::NextFiremode()
 {

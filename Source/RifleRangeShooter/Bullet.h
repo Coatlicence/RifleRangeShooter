@@ -33,7 +33,7 @@ protected:
 	float Damage;
 
 private:
-	float LifeTime = 2.f;
+	float LifeTime = 1.5;
 
 	FTimerHandle LifeTimer;
 

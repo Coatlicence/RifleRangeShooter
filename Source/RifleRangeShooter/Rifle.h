@@ -31,10 +31,13 @@ protected:
 	///---------------------------------------------------
 	// Ammo Clip
 
+	UPROPERTY(EditAnywhere, Category = "ABullet")
 	int MaxAmmoInClip = 30;
 
+	UPROPERTY(EditAnywhere, Category = "ABullet")
 	int CurrentAmmoInClip = 0;
 
+	UPROPERTY(EditAnywhere, Category = "ABullet")
 	int AllAmmo = 0;
 	
 	///--------------------------------------------------
@@ -59,7 +62,14 @@ protected:
 	float Recoil = 0.5;
 
 	UPROPERTY(EditAnywhere, Category = "Recoil")
+	float MinInaccuracy = 1.f;
+
+	float MinInaccuracyDynamic = MinInaccuracy;
+
+	UPROPERTY(EditAnywhere, Category = "Recoil")
 	float MaxInaccuracy = 3.f;
+
+	float MaxInaccuracyDynamic = MaxInaccuracy;
 
 	/// For EveryTick subracts this value from CurrentInaccuracy
 	UPROPERTY(EditAnywhere, Category = "Recoil")

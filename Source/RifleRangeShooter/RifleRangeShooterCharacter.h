@@ -57,6 +57,7 @@ protected:
 	/** Handles stafing movement, left and right */
 	void MoveRight(float Val);
 	
+
 	/// Interacts with InterfaceInteractable
 	void Interact();
 

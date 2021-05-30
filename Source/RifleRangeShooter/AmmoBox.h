@@ -22,7 +22,7 @@ public:
 
 
 	UPROPERTY(EditAnywhere, Category = "Ammo")
-	int Ammo;
+	int Ammo = 10;
 
 protected:
 	UPROPERTY(EditDefaultsOnly)

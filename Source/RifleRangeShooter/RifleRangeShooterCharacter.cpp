@@ -179,8 +179,7 @@ void ARifleRangeShooterCharacter::ChooseWeapon(int INDEXofWeaponBelt)
 
 		CurrentWeapon = INDEXofWeaponBelt;
 
-		if ((WeaponBelt.IsValidIndex(CurrentWeapon)) &&
-			(WeaponBelt[CurrentWeapon] != nullptr))
+		if (WeaponBelt.IsValidIndex(CurrentWeapon))
 		{
 			for (int i = 0; i < BeltSize; i++)
 			{
@@ -188,6 +187,7 @@ void ARifleRangeShooterCharacter::ChooseWeapon(int INDEXofWeaponBelt)
 					WeaponBelt[i]->SetActorHiddenInGame(true);
 			}
 
+			if (WeaponBelt[CurrentWeapon] != nullptr)
 			WeaponBelt[CurrentWeapon]->SetActorHiddenInGame(false);
 		}
 		else

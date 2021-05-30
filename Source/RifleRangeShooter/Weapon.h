@@ -39,7 +39,7 @@ protected:
 
 	void CanAttackSet();
 
-	//UPROPERTY(VisibleAnywhere, Category = "Weapon")
+	UPROPERTY(EditAnywhere, Category = "Sound")
 	TArray<USoundBase*> AttackSounds;
 	
 
